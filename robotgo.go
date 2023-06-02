@@ -481,6 +481,8 @@ func CheckMouse(btn string) C.MMMouseButton {
 		"wheelUp":    C.WheelUp,
 		"wheelLeft":  C.WheelLeft,
 		"wheelRight": C.WheelRight,
+		"x1":         C.X_BUTTON_1,
+		"x2":         C.X_BUTTON_2,
 	}
 	if v, ok := m1[btn]; ok {
 		return v

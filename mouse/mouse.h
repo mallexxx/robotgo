@@ -38,6 +38,8 @@
 		WheelUp  =  5,
 		WheelLeft =  6,
 		WheelRight = 7,
+		X_BUTTON_1 = 8,
+		X_BUTTON_2 = 9
 	};
 	typedef unsigned int MMMouseButton;
 #else

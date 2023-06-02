@@ -45,20 +45,47 @@ CGEventType MMMouseToCGEventType(bool down, MMMouseButton button) {
 #elif defined(IS_WINDOWS)
  
 DWORD MMMouseUpToMEventF(MMMouseButton button) {
-	if (button == LEFT_BUTTON) { return MOUSEEVENTF_LEFTUP; }
-	if (button == RIGHT_BUTTON) { return MOUSEEVENTF_RIGHTUP; } 
-	return MOUSEEVENTF_MIDDLEUP;
+	switch (button) {
+	case LEFT_BUTTON:
+		return MOUSEEVENTF_LEFTUP;
+	case RIGHT_BUTTON:
+		return MOUSEEVENTF_RIGHTUP;
+	case X_BUTTON_1: case X_BUTTON_2:
+		return MOUSEEVENTF_XUP;
+	default:
+		return MOUSEEVENTF_MIDDLEUP;
+	}
 }
 
 DWORD MMMouseDownToMEventF(MMMouseButton button) {
-	if (button == LEFT_BUTTON) { return MOUSEEVENTF_LEFTDOWN; }
-	if (button == RIGHT_BUTTON) { return MOUSEEVENTF_RIGHTDOWN; } 
-	return MOUSEEVENTF_MIDDLEDOWN;
+	switch (button) {
+	case LEFT_BUTTON:
+		return MOUSEEVENTF_LEFTDOWN;
+	case RIGHT_BUTTON:
+		return MOUSEEVENTF_RIGHTDOWN;
+	case X_BUTTON_1: case X_BUTTON_2:
+		return MOUSEEVENTF_XDOWN;
+	default:
+		return MOUSEEVENTF_MIDDLEDOWN;
+	}
 }
 
 DWORD MMMouseToMEventF(bool down, MMMouseButton button) {
 	if (down) { return MMMouseDownToMEventF(button); }
 	return MMMouseUpToMEventF(button);
+}
+
+DWORD MMMouseToMouseData(MMMouseButton button) {
+	switch (button) {
+	case X_BUTTON_1:
+		return XBUTTON1;
+		break;
+	case X_BUTTON_2:
+		return XBUTTON2;
+		break;
+	default:
+		return 0;
+	}
 }
 #endif
 
@@ -181,7 +208,8 @@ void toggleMouse(bool down, MMMouseButton button) {
 		mouseInput.mi.dwFlags = MMMouseToMEventF(down, button);
 		mouseInput.mi.time = 0;
 		mouseInput.mi.dwExtraInfo = 0;
-		mouseInput.mi.mouseData = 0;
+		mouseInput.mi.mouseData = MMMouseToMouseData(button);
+		
 		SendInput(1, &mouseInput, sizeof(mouseInput));
 	#endif
 }
