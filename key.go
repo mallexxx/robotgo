@@ -567,6 +567,36 @@ func KeyToggle(key string, args ...interface{}) error {
 	return keyToggles(key, keyArr, pid)
 }
 
+func KeyToggles(key int, args ...interface{}) {
+	pid := 0
+	var keyArr []string
+	if len(args) > 0 && reflect.TypeOf(args[0]) == reflect.TypeOf(pid) {
+		pid = args[0].(int)
+		keyArr = ToStrings(args[1:])
+	} else {
+		keyArr = ToStrings(args)
+	}
+
+	if len(keyArr) <= 0 {
+		keyArr = append(keyArr, "down")
+	}
+
+	down := true
+	if keyArr[0] == "up" {
+		down = false
+	}
+
+	if keyArr[0] == "up" || keyArr[0] == "down" {
+		keyArr = keyArr[1:]
+	}
+	flags := getFlagsFromValue(keyArr)
+
+	C.toggleKeyCode(C.MMKeyCode(key), C.bool(down), flags, C.uintptr(pid))
+	if len(args) > 0 {
+		MilliSleep(KeySleep)
+	}
+}
+
 // KeyPress press key string
 func KeyPress(key string, args ...interface{}) error {
 	err := KeyDown(key, args...)
